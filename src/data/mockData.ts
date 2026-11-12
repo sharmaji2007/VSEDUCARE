@@ -1,0 +1,495 @@
+import {
+  ComboOption,
+  NoteItem,
+  DoubtThread,
+  StudentWardProfile,
+  BatchAnnouncement,
+  BoardType,
+  ClassLevel,
+  BatchMode,
+} from '@/types';
+
+export const COMBOS_DATA: ComboOption[] = [
+  {
+    key: 'maths',
+    number: 1,
+    label: 'Maths',
+    subjects: ['Mathematics'],
+    description: 'Concepts, NCERT & Board question practice.',
+    monthlyBasePrice: 1299,
+  },
+  {
+    key: 'science',
+    number: 2,
+    label: 'Science',
+    subjects: ['Physics', 'Chemistry', 'Biology'],
+    description: 'Core concepts, diagrams & numericals.',
+    monthlyBasePrice: 1399,
+  },
+  {
+    key: 'social_science',
+    number: 3,
+    label: 'Social Science',
+    subjects: ['History', 'Civics', 'Geography', 'Economics'],
+    description: 'Timeline charts, maps & scoring answers.',
+    monthlyBasePrice: 999,
+  },
+  {
+    key: 'math_social',
+    number: 4,
+    label: 'Math + Social Science',
+    subjects: ['Maths', 'Social Science'],
+    description: 'Balanced quantitative & humanities prep.',
+    monthlyBasePrice: 2099,
+  },
+  {
+    key: 'science_social',
+    number: 5,
+    label: 'Science + Social Science',
+    subjects: ['Science', 'Social Science'],
+    description: 'Complete theory & science revision.',
+    monthlyBasePrice: 2199,
+  },
+  {
+    key: 'math_science',
+    number: 6,
+    label: 'Math + Science',
+    subjects: ['Maths', 'Science (PCB)'],
+    description: 'Most popular STEM foundation combo.',
+    monthlyBasePrice: 2499,
+    popular: true,
+    badge: 'Popular',
+  },
+  {
+    key: 'math_science_social',
+    number: 7,
+    label: 'Math + Science + Social Science',
+    subjects: ['Maths', 'Science', 'Social Science'],
+    description: 'All 3 core subjects covered. Best value.',
+    monthlyBasePrice: 2999,
+    popular: true,
+    badge: 'Best Value',
+  },
+];
+
+export const calculateCoursePrice = (
+  comboKey: string,
+  classLevel: ClassLevel,
+  board: BoardType,
+  mode: BatchMode
+) => {
+  const combo = COMBOS_DATA.find((c) => c.key === comboKey) || COMBOS_DATA[0];
+  let base = combo.monthlyBasePrice;
+
+  if (classLevel >= 11) base *= 1.4;
+  else if (classLevel >= 9) base *= 1.2;
+  else if (classLevel >= 7) base *= 1.05;
+
+  if (board === 'Foreign Board') base *= 1.35;
+  else if (board === 'ICSE') base *= 1.1;
+
+  if (mode === 'online') {
+    base *= 0.85; // 15% discount for online Google Meet
+  }
+
+  const roundedMonthly = Math.round(base / 10) * 10;
+  const quarterly = Math.round(roundedMonthly * 3 * 0.9);
+  const annual = Math.round(roundedMonthly * 10);
+
+  return {
+    monthly: roundedMonthly,
+    quarterly,
+    annual,
+    savingsText: mode === 'online' ? '15% Off (Online Google Meet)' : 'Standard Center Fee',
+  };
+};
+
+export const BATCH_BANNER_SLIDES = [
+  {
+    tag: 'Classes 6–12',
+    board: 'CBSE • ICSE • Foreign Board',
+    headline: 'New Academic Batches Starting This Week',
+    subhead: 'Live interactive classes on Google Meet, personal doubt solving with Sir & comprehensive notes.',
+    badge: 'Limited Seats (25/Batch)',
+    cta: 'Explore Batches',
+  },
+  {
+    tag: 'Class 10 & 12',
+    board: 'Board Booster 2026-27',
+    headline: 'Pre-Board Crash Course & Test Series',
+    subhead: 'Revise entire Maths, Science & SST syllabus in 45 days with past 10-year question practice.',
+    badge: 'Starting 20th Nov',
+    cta: 'Join Crash Course',
+  },
+  {
+    tag: 'Cambridge & IB',
+    board: 'Foreign Board MYP',
+    headline: 'International Board Math & Science Sprint',
+    subhead: 'Concept-focused online evening sessions tailored to IGCSE and IB grading criteria.',
+    badge: 'Admissions Open',
+    cta: 'View Timings',
+  },
+];
+
+export const BATCH_UPDATES: BatchAnnouncement[] = [
+  {
+    id: 'b1',
+    title: 'Class 10 Board Booster Batch',
+    board: 'CBSE',
+    classGrade: 'Class 10',
+    mode: 'Online (Google Meet)',
+    timing: '5:00 PM – 6:30 PM',
+    startDate: '18 Nov 2026',
+    seatsLeft: 6,
+    totalSeats: 25,
+    isNew: true,
+  },
+  {
+    id: 'b2',
+    title: 'Class 9 Math & Science Sprint',
+    board: 'ICSE',
+    classGrade: 'Class 9',
+    mode: 'Online (Google Meet)',
+    timing: '6:45 PM – 8:00 PM',
+    startDate: '20 Nov 2026',
+    seatsLeft: 4,
+    totalSeats: 25,
+    isNew: true,
+  },
+  {
+    id: 'b3',
+    title: 'IGCSE & IB MYP Evening Batch',
+    board: 'Foreign Board',
+    classGrade: 'Class 7 - 9',
+    mode: 'Online (Google Meet)',
+    timing: '7:30 PM – 9:00 PM',
+    startDate: '22 Nov 2026',
+    seatsLeft: 7,
+    totalSeats: 20,
+    isNew: false,
+  },
+  {
+    id: 'b4',
+    title: 'Class 8 Offline Classroom Batch',
+    board: 'CBSE',
+    classGrade: 'Class 8',
+    mode: 'Offline Center',
+    timing: '4:00 PM – 5:30 PM',
+    startDate: '25 Nov 2026',
+    seatsLeft: 8,
+    totalSeats: 25,
+    isNew: false,
+  },
+];
+
+export const NOTES_CATALOG: NoteItem[] = [
+  {
+    id: 'note-m10',
+    title: 'Class 10 Maths Handwritten Notes & Formulas',
+    board: 'CBSE',
+    classLevel: 10,
+    subject: 'Maths',
+    chaptersCount: 14,
+    pages: 140,
+    price: 249,
+    originalPrice: 599,
+    rating: 4.9,
+    downloadsCount: 1420,
+    highlights: [
+      'Color-coded formula cheat sheet',
+      'Important theorems step-by-step',
+      'Past 10-year repeated questions',
+    ],
+    previewPages: [
+      'Trigonometry value memory chart',
+      'Triangles: BPT Theorem proof',
+      'Quadratic equations nature of roots',
+    ],
+    sampleQuestion: 'Prove that √5 is irrational using contradiction method.',
+  },
+  {
+    id: 'note-s10',
+    title: 'Class 10 Science Illustrated Notes & Mind Maps',
+    board: 'CBSE',
+    classLevel: 10,
+    subject: 'Science',
+    chaptersCount: 13,
+    pages: 165,
+    price: 279,
+    originalPrice: 699,
+    rating: 5.0,
+    downloadsCount: 1890,
+    highlights: [
+      'Ray diagrams with sign conventions',
+      'Balanced equations & reaction colors',
+      'Neat labelled Biology diagrams',
+    ],
+    previewPages: [
+      'Ray diagrams for Concave & Convex lenses',
+      'Chemical equations with catalyst markers',
+      'Heart double circulation flow chart',
+    ],
+    sampleQuestion: 'Trace the path of blood circulation in the human heart with a diagram.',
+  },
+  {
+    id: 'note-sst10',
+    title: 'Class 10 Social Science Timeline & Map Guide',
+    board: 'CBSE',
+    classLevel: 10,
+    subject: 'Social Science',
+    chaptersCount: 18,
+    pages: 150,
+    price: 199,
+    originalPrice: 499,
+    rating: 4.8,
+    downloadsCount: 980,
+    highlights: [
+      'Chronological history timelines',
+      'High-scoring 5-mark answer points',
+      'Printable board map pointers',
+    ],
+    previewPages: [
+      'Nationalism in India movement timeline',
+      'Major soil types and river dams map',
+      'Economics: Sectors of Indian economy summary',
+    ],
+    sampleQuestion: 'Explain why the Non-Cooperation Movement slowed down in cities.',
+  },
+  {
+    id: 'note-icse9',
+    title: 'Class 9 ICSE Maths & Science Core Notes',
+    board: 'ICSE',
+    classLevel: 9,
+    subject: 'Maths',
+    chaptersCount: 15,
+    pages: 160,
+    price: 299,
+    originalPrice: 699,
+    rating: 4.9,
+    downloadsCount: 610,
+    highlights: [
+      'Selina Concise Maths key steps',
+      'Physics Laws of motion numericals',
+      'Chemistry gas laws graphs',
+    ],
+    previewPages: [
+      'Compound interest shortcuts',
+      'Archimedes principle & floatation rules',
+    ],
+    sampleQuestion: 'Calculate pressure exerted by a fluid column of height 2m and density 1000 kg/m³.',
+  },
+];
+
+export const DOUBT_THREADS: DoubtThread[] = [
+  {
+    id: 'd1',
+    studentName: 'Aarav (Class 10)',
+    classLevel: 10,
+    board: 'CBSE',
+    subject: 'Maths',
+    topic: 'Triangles - BPT Proof',
+    question: 'Sir, why do we draw perpendiculars from both E to AB and D to AC in BPT?',
+    askedTime: '20 mins ago',
+    status: 'Answered',
+    teacherReply: {
+      teacherName: 'Sir',
+      replyTime: '10 mins ago',
+      text: 'Because we compute Area(ΔADE) with two different bases (AD and AE). This lets us equate both ratios to get AD/DB = AE/EC.',
+      solutionSteps: [
+        'Area(ΔADE) = 1/2 × AD × EN',
+        'Area(ΔBDE) = 1/2 × DB × EN',
+        'Dividing gives Area(ΔADE) / Area(ΔBDE) = AD / DB',
+        'Repeat on side AC to prove AD/DB = AE/EC. Proved!',
+      ],
+      tips: 'In boards, always draw the figure with pencil and state parallels DE || BC.',
+    },
+  },
+  {
+    id: 'd2',
+    studentName: 'Priya (Class 9)',
+    classLevel: 9,
+    board: 'ICSE',
+    subject: 'Science',
+    topic: 'Floatation of Ship',
+    question: 'Sir, why does an iron nail sink in water while a massive iron ship floats?',
+    askedTime: '1 hour ago',
+    status: 'Answered',
+    teacherReply: {
+      teacherName: 'Sir',
+      replyTime: '45 mins ago',
+      text: 'It depends on average density: a solid nail has higher density than water, while a hollow ship traps air and its average density is much lower than water.',
+      solutionSteps: [
+        '1. Nail is solid iron: Density > Water, so it sinks.',
+        '2. Ship is hollow: Trapped air lowers average density below water.',
+        '3. Buoyant force on the ship equals its total weight (Law of Floatation).',
+      ],
+      tips: 'Use the keyword "average density" to get full marks.',
+    },
+  },
+];
+
+export const MOCK_STUDENTS_DATA: Record<string, StudentWardProfile> = {
+  'VSE-2026-A1': {
+    wardId: 'VSE-2026-A1',
+    studentName: 'Rohan Malhotra',
+    parentName: 'Sanjay Malhotra',
+    parentPhone: '9876543210',
+    classLevel: 10,
+    board: 'CBSE',
+    enrolledCombo: 'Math + Science + Social Science',
+    batchMode: 'online',
+    batchTiming: '5:00 PM – 6:30 PM (Mon to Fri)',
+    attendanceRate: 94,
+    averageScore: 90,
+    assignmentsCompletedRate: 96,
+    teacherMessage:
+      'Rohan is consistent in online classes. Keep practicing Science numericals.',
+    attendance: [
+      {
+        date: '11-Nov-2026',
+        day: 'Wed',
+        status: 'Present',
+        timeAttended: '05:00 PM – 06:30 PM',
+        duration: '90 mins',
+        platform: 'Google Meet (Live)',
+        notes: 'Full attendance. Answered quizzes.',
+      },
+      {
+        date: '10-Nov-2026',
+        day: 'Tue',
+        status: 'Present',
+        timeAttended: '05:02 PM – 06:30 PM',
+        duration: '88 mins',
+        platform: 'Google Meet (Live)',
+        notes: 'Active in class.',
+      },
+      {
+        date: '08-Nov-2026',
+        day: 'Sun',
+        status: 'Absent',
+        timeAttended: '—',
+        duration: '0 mins',
+        notes: 'Absent (School function). Recording sent.',
+      },
+      {
+        date: '07-Nov-2026',
+        day: 'Sat',
+        status: 'Present',
+        timeAttended: '04:00 PM – 05:30 PM',
+        duration: '90 mins',
+        platform: 'Google Meet (Live)',
+        notes: 'Attended weekly test.',
+      },
+    ],
+    tests: [
+      {
+        id: 't-1',
+        title: 'Surface Areas & Volumes Test',
+        subject: 'Maths',
+        date: '07-Nov-2026',
+        marksObtained: 38,
+        totalMarks: 40,
+        percentage: 95,
+        classAverage: 30,
+        highestMarks: 40,
+        rank: '2nd in Batch',
+        feedback: 'Excellent work. Accurate calculations.',
+      },
+      {
+        id: 't-2',
+        title: 'Electricity & Circuits Test',
+        subject: 'Science',
+        date: '31-Oct-2026',
+        marksObtained: 46,
+        totalMarks: 50,
+        percentage: 92,
+        classAverage: 36,
+        highestMarks: 48,
+        rank: '3rd in Batch',
+        feedback: 'Neat circuit diagrams.',
+      },
+    ],
+    assignments: [
+      {
+        id: 'a-1',
+        title: 'Quadratic Equations Worksheet 10',
+        subject: 'Maths',
+        dueDate: '10-Nov-2026',
+        submittedOn: '09-Nov-2026 09:15 PM',
+        status: 'Submitted',
+        score: '10 / 10',
+        remarks: 'Correct solutions.',
+      },
+      {
+        id: 'a-2',
+        title: 'Light Refraction Diagram Sheet',
+        subject: 'Science',
+        dueDate: '14-Nov-2026',
+        status: 'Pending',
+        remarks: 'Due in 3 days.',
+      },
+    ],
+  },
+  'VSE-2026-B4': {
+    wardId: 'VSE-2026-B4',
+    studentName: 'Priya Iyer',
+    parentName: 'Ramesh Iyer',
+    parentPhone: '9845012345',
+    classLevel: 9,
+    board: 'ICSE',
+    enrolledCombo: 'Math + Science',
+    batchMode: 'offline',
+    batchTiming: '4:00 PM – 5:30 PM (Tue-Thu-Sat)',
+    attendanceRate: 98,
+    averageScore: 94,
+    assignmentsCompletedRate: 100,
+    teacherMessage: 'Priya is performing at top rank in the class.',
+    attendance: [
+      {
+        date: '10-Nov-2026',
+        day: 'Tue',
+        status: 'Present',
+        timeAttended: '03:58 PM – 05:32 PM',
+        duration: '94 mins',
+        platform: 'Offline Center',
+        notes: 'Present at Center Desk #4.',
+      },
+      {
+        date: '07-Nov-2026',
+        day: 'Sat',
+        status: 'Present',
+        timeAttended: '04:00 PM – 05:30 PM',
+        duration: '90 mins',
+        platform: 'Offline Center',
+        notes: 'Submitted homework.',
+      },
+    ],
+    tests: [
+      {
+        id: 't-21',
+        title: 'Compound Interest Test',
+        subject: 'Maths',
+        date: '08-Nov-2026',
+        marksObtained: 49,
+        totalMarks: 50,
+        percentage: 98,
+        classAverage: 37,
+        highestMarks: 50,
+        rank: '1st in Batch',
+        feedback: 'Top score in the batch.',
+      },
+    ],
+    assignments: [
+      {
+        id: 'a-21',
+        title: 'Selina Chapter 8 Practice Questions',
+        subject: 'Maths',
+        dueDate: '09-Nov-2026',
+        submittedOn: '08-Nov-2026 05:00 PM',
+        status: 'Submitted',
+        score: '10 / 10',
+        remarks: 'Clean steps.',
+      },
+    ],
+  },
+};
